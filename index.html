@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Happy 10th Birthday Aariv!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #2a2468;
+    --night-deep: #1b1650;
+    --sun: #ffd23f;
+    --coral: #ff4d6d;
+    --mint: #3ddc97;
+    --sky: #4cc9f0;
+    --paper: #fffdf7;
+    --ink: #2a2468;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: "Nunito", system-ui, sans-serif;
+    color: var(--paper);
+    background: radial-gradient(circle at 50% 20%, var(--night) 0%, var(--night-deep) 75%);
+    overflow-x: hidden;
+  }
+  canvas#confetti {
+    position: fixed; inset: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 50;
+  }
+
+  /* ---------- Screens ---------- */
+  .screen {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .screen.active { display: flex; }
+
+  /* ---------- Screen 1 ---------- */
+  .ten {
+    font-family: "Baloo 2", sans-serif;
+    font-weight: 800;
+    font-size: clamp(7rem, 32vw, 15rem);
+    line-height: 0.85;
+    margin: 0;
+    color: var(--sun);
+    text-shadow: 0.05em 0.05em 0 var(--coral), 0.1em 0.1em 0 rgba(0,0,0,.25);
+    animation: pop 0.9s cubic-bezier(.2,1.6,.4,1) both;
+  }
+  h1 {
+    font-family: "Baloo 2", sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.8rem, 6vw, 3.2rem);
+    margin: 18px 0 4px;
+  }
+  .sub { font-size: clamp(1.05rem, 3vw, 1.4rem); margin: 0 0 36px; opacity: .9; }
+
+  .hearts {
+    display: flex; gap: clamp(24px, 8vw, 80px);
+    align-items: flex-start; justify-content: center; flex-wrap: wrap;
+  }
+  .heart-btn {
+    background: none; border: 0; padding: 0; cursor: pointer;
+    font: inherit; color: inherit;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    width: 150px;
+  }
+  .heart-btn svg { width: 130px; height: 120px; overflow: visible; transition: transform .15s; }
+  .heart-btn .label {
+    font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 1.15rem; line-height: 1.1;
+  }
+  #yes svg { animation: beat 1.2s ease-in-out infinite; filter: drop-shadow(0 6px 0 rgba(0,0,0,.25)); }
+  #yes:hover svg { transform: scale(1.12); }
+  #yes:focus-visible, #no:focus-visible { outline: 4px solid var(--sun); outline-offset: 6px; border-radius: 16px; }
+  #no svg { filter: drop-shadow(0 6px 0 rgba(0,0,0,.25)); }
+  #no.running {
+    position: fixed; z-index: 20;
+    transition: left .18s cubic-bezier(.3,1.4,.5,1), top .18s cubic-bezier(.3,1.4,.5,1);
+  }
+  .placeholder { width: 150px; height: 1px; }
+
+  /* ---------- Screen 2 ---------- */
+  .card {
+    background: var(--paper);
+    color: var(--ink);
+    max-width: 640px;
+    width: 100%;
+    border-radius: 28px;
+    padding: clamp(28px, 6vw, 52px);
+    box-shadow: 0 10px 0 var(--coral), 0 30px 60px rgba(0,0,0,.4);
+    animation: rise .8s cubic-bezier(.2,1.2,.4,1) both;
+    position: relative;
+  }
+  .card .mini-heart { width: 64px; margin: -84px auto 12px; display: block; animation: beat 1.2s ease-in-out infinite; }
+  .card h2 {
+    font-family: "Baloo 2", sans-serif; font-weight: 800;
+    font-size: clamp(1.7rem, 6vw, 2.6rem);
+    line-height: 1.1; margin: 0 0 18px; color: var(--coral);
+  }
+  .card p {
+    font-size: clamp(1.05rem, 3.2vw, 1.25rem);
+    line-height: 1.6; margin: 0 0 16px; text-align: left; font-weight: 600;
+  }
+  .gift {
+    background: var(--sun);
+    border-radius: 16px;
+    padding: 14px 18px;
+    text-align: center !important;
+    font-family: "Baloo 2", sans-serif;
+    font-weight: 800 !important;
+    font-size: clamp(1.15rem, 4vw, 1.5rem) !important;
+    transform: rotate(-1.5deg);
+  }
+  .sign { text-align: right !important; font-family: "Baloo 2", sans-serif; font-weight: 800 !important; color: var(--coral); margin-bottom: 0 !important; }
+
+  @keyframes beat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+  @keyframes pop { from { transform: scale(.2) rotate(-12deg); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes rise { from { transform: translateY(60px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+
+<!-- Screen 1: the question -->
+<main class="screen active" id="screen1">
+  <p class="ten" aria-hidden="true">10</p>
+  <h1>Happy Birthday, Aariv!</h1>
+  <p class="sub">You're turning 10! I have a gift for you...</p>
+
+  <div class="hearts">
+    <button class="heart-btn" id="yes" type="button">
+      <svg viewBox="0 0 100 92" aria-hidden="true"><path d="M50 90 C-20 40 15 -8 50 22 C85 -8 120 40 50 90Z" fill="#ff4d6d"/><path d="M26 18 C32 10 42 10 46 18" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".55"/></svg>
+      <span class="label">Accept my gift</span>
+    </button>
+
+    <div class="placeholder" id="noHome">
+      <button class="heart-btn" id="no" type="button">
+        <svg viewBox="0 0 100 92" aria-hidden="true"><path d="M50 90 C-20 40 15 -8 50 22 C85 -8 120 40 50 90Z" fill="#7b78c9"/><path d="M26 18 C32 10 42 10 46 18" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".4"/></svg>
+        <span class="label">Not accept my gift</span>
+      </button>
+    </div>
+  </div>
+</main>
+
+<!-- Screen 2: the message -->
+<main class="screen" id="screen2">
+  <section class="card">
+    <svg class="mini-heart" viewBox="0 0 100 92" aria-hidden="true"><path d="M50 90 C-20 40 15 -8 50 22 C85 -8 120 40 50 90Z" fill="#ff4d6d"/></svg>
+    <h2>Happy 10th Birthday, Aariv!</h2>
+    <p>I love you so much, and you will always be the best brother to me. All the fun I have is because of you, and my life would be so boring without you.</p>
+    <p>I saw you grow up before my eyes and now you are 10 years old. WOW!!</p>
+    <p>Sorry I could not get you something tangible, but please accept my</p>
+    <p class="gift">$50 thank you and I love you!</p>
+    <p class="sign">Love, your brother</p>
+  </section>
+</main>
+
+<script>
+(function () {
+  var screen1 = document.getElementById('screen1');
+  var screen2 = document.getElementById('screen2');
+  var yes = document.getElementById('yes');
+  var no = document.getElementById('no');
+  var noHome = document.getElementById('noHome');
+  var RUN_DISTANCE = 150;   // how close the mouse can get before the heart runs
+  var running = false;
+
+  /* ---------- The heart that can't be clicked ---------- */
+  function startRunning() {
+    if (running) return;
+    var r = no.getBoundingClientRect();
+    no.classList.add('running');
+    no.style.left = r.left + 'px';
+    no.style.top = r.top + 'px';
+    running = true;
+  }
+
+  function dodge(px, py) {
+    startRunning();
+    var w = no.offsetWidth, h = no.offsetHeight;
+    var maxX = window.innerWidth - w - 10;
+    var maxY = window.innerHeight - h - 10;
+    var best = null, bestDist = -1;
+    // try several random spots, pick the one farthest from the pointer
+    for (var i = 0; i < 14; i++) {
+      var x = 10 + Math.random() * Math.max(maxX - 10, 0);
+      var y = 10 + Math.random() * Math.max(maxY - 10, 0);
+      var d = Math.hypot(x + w / 2 - px, y + h / 2 - py);
+      if (d > bestDist) { bestDist = d; best = { x: x, y: y }; }
+    }
+    no.style.left = best.x + 'px';
+    no.style.top = best.y + 'px';
+  }
+
+  function near(px, py) {
+    var r = no.getBoundingClientRect();
+    var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    return Math.hypot(px - cx, py - cy) < RUN_DISTANCE;
+  }
+
+  document.addEventListener('pointermove', function (e) {
+    if (!screen1.classList.contains('active')) return;
+    if (near(e.clientX, e.clientY)) dodge(e.clientX, e.clientY);
+  });
+  // Phones/tablets: run as soon as a finger touches down anywhere near it
+  document.addEventListener('pointerdown', function (e) {
+    if (!screen1.classList.contains('active')) return;
+    if (near(e.clientX, e.clientY)) dodge(e.clientX, e.clientY);
+  });
+  // Even if somehow clicked, it does nothing
+  no.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); });
+  no.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dodge(-999, -999); }
+  });
+  no.addEventListener('focus', function () { dodge(-999, -999); });
+  window.addEventListener('resize', function () {
+    if (running) dodge(-999, -999);
+  });
+
+  /* ---------- Accept the gift ---------- */
+  yes.addEventListener('click', function () {
+    screen1.classList.remove('active');
+    screen2.classList.add('active');
+    window.scrollTo(0, 0);
+    burst();
+    setTimeout(burst, 700);
+  });
+
+  /* ---------- Confetti ---------- */
+  var canvas = document.getElementById('confetti');
+  var ctx = canvas.getContext('2d');
+  var pieces = [];
+  var colors = ['#ffd23f', '#ff4d6d', '#3ddc97', '#4cc9f0', '#ffffff', '#b794f6'];
+  var raf = null;
+
+  function sizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  sizeCanvas();
+  window.addEventListener('resize', sizeCanvas);
+
+  function burst() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    for (var i = 0; i < 140; i++) {
+      pieces.push({
+        x: canvas.width / 2 + (Math.random() - 0.5) * 120,
+        y: canvas.height * 0.35,
+        vx: (Math.random() - 0.5) * 16,
+        vy: -Math.random() * 15 - 3,
+        size: 6 + Math.random() * 8,
+        rot: Math.random() * Math.PI,
+        vr: (Math.random() - 0.5) * 0.4,
+        color: colors[(Math.random() * colors.length) | 0],
+        life: 0
+      });
+    }
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+
+  function tick() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces = pieces.filter(function (p) { return p.y < canvas.height + 20 && p.life < 300; });
+    pieces.forEach(function (p) {
+      p.vy += 0.35; p.vx *= 0.99;
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life++;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      ctx.restore();
+    });
+    if (pieces.length) { raf = requestAnimationFrame(tick); }
+    else { raf = null; ctx.clearRect(0, 0, canvas.width, canvas.height); }
+  }
+})();
+</script>
+</body>
+</html>
